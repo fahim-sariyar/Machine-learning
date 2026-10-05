@@ -1,0 +1,284 @@
+# ============================================================
+#                 FIND-S ALGORITHM
+# ============================================================
+
+import matplotlib.pyplot as plt
+
+# ------------------------------------------------------------
+# Training Data
+# ------------------------------------------------------------
+
+data = [
+    ["Sunny", "Warm", "Normal", "Strong", "Warm", "Same", "Yes"],
+    ["Sunny", "Warm", "High", "Strong", "Warm", "Same", "Yes"],
+    ["Rainy", "Cold", "High", "Strong", "Warm", "Change", "No"],
+    ["Sunny", "Warm", "High", "Strong", "Cool", "Change", "Yes"],
+    ["Cloudy", "Warm", "High", "Strong", "Cool", "Change", "No"]
+]
+
+attributes_name = [
+    "Sky",
+    "AirTemp",
+    "Humidity",
+    "Wind",
+    "Water",
+    "Forecast"
+]
+
+# ------------------------------------------------------------
+# Initial Hypothesis
+# ------------------------------------------------------------
+
+hypothesis = ["0", "0", "0", "0", "0", "0"]
+
+# Store step-by-step results
+steps = []
+
+# Count Positive and Negative
+positive = 0
+negative = 0
+
+
+# ============================================================
+#                    FIND-S ALGORITHM
+# ============================================================
+
+for step, row in enumerate(data, start=1):
+
+    attributes = row[:-1]
+    target = row[-1]
+
+    # --------------------------------------------------------
+    # Positive Example
+    # --------------------------------------------------------
+
+    if target == "Yes":
+
+        positive += 1
+
+        # First positive example
+        if hypothesis == ["0", "0", "0", "0", "0", "0"]:
+
+            hypothesis = attributes.copy()
+
+        else:
+
+            # Compare each attribute
+            for i in range(len(hypothesis)):
+
+                if hypothesis[i] != attributes[i]:
+                    hypothesis[i] = "?"
+
+        status = "Updated"
+
+    # --------------------------------------------------------
+    # Negative Example
+    # --------------------------------------------------------
+
+    else:
+
+        negative += 1
+
+        # Find-S ignores negative examples
+        status = "Ignored"
+
+    # Save step result
+    steps.append([
+        step,
+        target,
+        status,
+        hypothesis.copy()
+    ])
+
+
+# ============================================================
+#                  DISPLAY MAIN RESULT
+# ============================================================
+
+print()
+print("=" * 65)
+print("                    FIND-S ALGORITHM")
+print("=" * 65)
+
+print()
+print("DATASET INFORMATION")
+print("-" * 65)
+
+print(f"Total Examples    : {len(data)}")
+print(f"Positive Examples : {positive}")
+print(f"Negative Examples : {negative}")
+
+print()
+print("=" * 65)
+print("                 STEP-BY-STEP PROCESS")
+print("=" * 65)
+
+
+# ------------------------------------------------------------
+# Display each step
+# ------------------------------------------------------------
+
+for step in steps:
+
+    number = step[0]
+    target = step[1]
+    status = step[2]
+    current_hypothesis = step[3]
+
+    print()
+    print(f"Step {number}")
+    print("-" * 65)
+
+    print(f"Target       : {target}")
+    print(f"Status       : {status}")
+
+    print("Hypothesis   : < ", end="")
+
+    print(", ".join(current_hypothesis), end="")
+
+    print(" >")
+
+
+# ============================================================
+#                  FINAL HYPOTHESIS
+# ============================================================
+
+print()
+print("=" * 65)
+print("                    FINAL HYPOTHESIS")
+print("=" * 65)
+
+print()
+print("< ", end="")
+print(", ".join(hypothesis), end="")
+print(" >")
+
+print()
+print("=" * 65)
+
+
+# ============================================================
+#                  STEP-BY-STEP TABLE
+# ============================================================
+
+print()
+print("STEP-BY-STEP SUMMARY")
+print("-" * 65)
+
+print(
+    f"{'Step':<8}"
+    f"{'Target':<10}"
+    f"{'Status':<12}"
+    f"{'Hypothesis'}"
+)
+
+print("-" * 65)
+
+for step in steps:
+
+    number = step[0]
+    target = step[1]
+    status = step[2]
+    current_hypothesis = step[3]
+
+    h = "<" + ", ".join(current_hypothesis) + ">"
+
+    print(
+        f"{number:<8}"
+        f"{target:<10}"
+        f"{status:<12}"
+        f"{h}"
+    )
+
+print("-" * 65)
+
+
+# ============================================================
+#                     PIE CHART
+# ============================================================
+
+labels = ["Positive", "Negative"]
+values = [positive, negative]
+
+plt.figure(figsize=(7, 7))
+
+plt.pie(
+    values,
+    labels=labels,
+    autopct="%1.1f%%",
+    startangle=90,
+    explode=(0.05, 0)
+)
+
+plt.title(
+    "Find-S Training Data Distribution",
+    fontsize=15,
+    fontweight="bold"
+)
+
+plt.tight_layout()
+plt.show()
+
+
+# ============================================================
+#                     BAR CHART
+# ============================================================
+
+plt.figure(figsize=(7, 5))
+
+categories = ["Positive", "Negative"]
+
+plt.bar(
+    categories,
+    values
+)
+
+plt.title(
+    "Positive vs Negative Examples",
+    fontsize=15,
+    fontweight="bold"
+)
+
+plt.xlabel("Example Type")
+plt.ylabel("Number of Examples")
+
+# Display values above bars
+for i, value in enumerate(values):
+
+    plt.text(
+        i,
+        value + 0.05,
+        str(value),
+        ha="center",
+        fontsize=12,
+        fontweight="bold"
+    )
+
+plt.ylim(0, max(values) + 1)
+
+plt.tight_layout()
+plt.show()
+
+
+# ============================================================
+#                  FINAL MESSAGE
+# ============================================================
+
+print()
+print("=" * 65)
+print("                  ALGORITHM COMPLETED")
+print("=" * 65)
+
+print()
+print("Final Hypothesis:")
+print("< " + ", ".join(hypothesis) + " >")
+
+print()
+print("Meaning:")
+print("Sky = Sunny")
+print("AirTemp = Warm")
+print("Wind = Strong")
+print("Other attributes = Any value (?)")
+
+print()
+print("=" * 65)
